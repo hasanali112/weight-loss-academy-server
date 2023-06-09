@@ -2,7 +2,7 @@ const express = require ('express');
 const app = express ();
 const cors = require ('cors');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000;
 
 // middleware
@@ -29,6 +29,11 @@ async function run() {
     
     const userCollection = client.db('weight-loss-academy').collection('users')
 
+    app.get('/users', async (req, res)=>{
+      const result = await userCollection.find().toArray()
+      res.send(result)
+    })
+
 
     app.post('/users', async(req, res)=>{
       const user = req.body;
@@ -40,6 +45,35 @@ async function run() {
       const result = await userCollection.insertOne(user);
       res.send(result)
     })
+
+
+    app.patch('/users/admin/:id', async (req, res)=>{
+      const id =req.params.id;
+      const filter = {_id : new ObjectId(id)}
+      const updateDoc = {
+         $set:{
+           role: 'admin'
+         },
+      }
+      const result = await userCollection.updateOne(filter, updateDoc);
+      res.send(result)
+    })
+
+
+    app.patch('/users/instructor/:id', async (req, res)=>{
+      const id =req.params.id;
+      const filter = {_id : new ObjectId(id)}
+      const updateDoc = {
+         $set:{
+           role: 'instructor'
+         },
+      }
+      const result = await userCollection.updateOne(filter, updateDoc);
+      res.send(result)
+    })
+
+
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
