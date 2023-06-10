@@ -47,6 +47,8 @@ async function run() {
     await client.connect();
     
     const userCollection = client.db('weight-loss-academy').collection('users')
+    const classCollection = client.db('weight-loss-academy').collection('classes')
+    
 
    //JWT
    app.post('/jwt', (req, res)=>{
@@ -113,7 +115,7 @@ async function run() {
       res.send(result)
     })
 
-
+    //get instructor
     app.patch('/users/instructor/:id', async (req, res)=>{
       const id =req.params.id;
       const filter = {_id : new ObjectId(id)}
@@ -124,6 +126,13 @@ async function run() {
       }
       const result = await userCollection.updateOne(filter, updateDoc);
       res.send(result)
+    })
+
+    //add a class
+    app.post('/classes', async(req, res)=>{
+       const addClass = req.body;
+       const result = await classCollection.insertOne(addClass)
+       res.send(result);
     })
 
 
