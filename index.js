@@ -174,6 +174,22 @@ async function run() {
       res.send(result)
     })
 
+    //feedback
+    app.patch("/feedback/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const feedbackUpdate = req.body;
+      console.log(feedbackUpdate)
+      const update = {
+        $set: {
+         feedback: feedbackUpdate.feedback,
+          },
+      };
+      const result = await classCollection.updateOne(filter, update, options);
+      res.send(result);
+    });
+
 
 
     // Send a ping to confirm a successful connection
