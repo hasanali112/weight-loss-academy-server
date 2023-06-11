@@ -69,6 +69,7 @@ async function run() {
     next();
   }
 
+  
 
     app.get('/users', verifyJWT, verifyAdmin, async (req, res)=>{
       const result = await userCollection.find().toArray()
@@ -101,6 +102,9 @@ async function run() {
       res.send(result);
     })
 
+  
+   
+
 
     //get admin role
     app.patch('/users/admin/:id', async (req, res)=>{
@@ -128,6 +132,13 @@ async function run() {
       res.send(result)
     })
 
+
+    //get class
+    app.get('/allclasses', async (req, res)=>{
+       const result= await classCollection.find().toArray()
+       res.send(result)
+    })
+
     //add a class
     app.post('/classes', async(req, res)=>{
        const addClass = req.body;
@@ -135,6 +146,33 @@ async function run() {
        res.send(result);
     })
 
+
+    //admin approve class
+
+    app.patch('/class/approve/:id', async (req, res)=>{
+      const id =req.params.id;
+      const filter = {_id : new ObjectId(id)}
+      const updateDoc = {
+         $set:{
+           status: 'approve'
+         },
+      }
+      const result = await classCollection.updateOne(filter, updateDoc);
+      res.send(result)
+    })
+
+    //admin denies class
+    app.patch('/class/deny/:id', async (req, res)=>{
+      const id =req.params.id;
+      const filter = {_id : new ObjectId(id)}
+      const updateDoc = {
+         $set:{
+           status: 'deny'
+         },
+      }
+      const result = await classCollection.updateOne(filter, updateDoc);
+      res.send(result)
+    })
 
 
 
