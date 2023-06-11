@@ -76,6 +76,20 @@ async function run() {
       res.send(result)
     })
 
+   //all approve class for classes page
+   app.get("/ourclasses", async (req, res) => {
+    const result = await classCollection
+      .find({ status: 'approve' })
+      .toArray();
+    res.send(result);
+  });
+
+
+
+
+
+
+
     //all user and social sign in
     app.post('/users', async(req, res)=>{
       const user = req.body;
