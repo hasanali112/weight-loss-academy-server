@@ -48,6 +48,7 @@ async function run() {
     
     const userCollection = client.db('weight-loss-academy').collection('users')
     const classCollection = client.db('weight-loss-academy').collection('classes')
+    const selectedClassCollection = client.db('weight-loss-academy').collection('selected-class')
     
 
    //JWT
@@ -84,12 +85,20 @@ async function run() {
     res.send(result);
   });
 
+   app.get("/ourinstructor", async (req, res) => {
+    const result = await userCollection
+      .find({ role: 'instructor' })
+      .toArray();
+    res.send(result);
+  });
 
-
-
-
-
-
+    app.post('/myselectedclass', async(req, res)=>{
+       const selectedClass = req.body;
+       console.log(selectedClass)
+       const result = await selectedClassCollection.insertOne(selectedClass)
+       res.send(result)
+    })
+   
     //all user and social sign in
     app.post('/users', async(req, res)=>{
       const user = req.body;
@@ -194,7 +203,6 @@ async function run() {
       const filter = { _id: new ObjectId(id) };
       const options = { upsert: true };
       const feedbackUpdate = req.body;
-      console.log(feedbackUpdate)
       const update = {
         $set: {
          feedback: feedbackUpdate.feedback,
