@@ -287,7 +287,7 @@ async function run() {
 
     //enroll history
     app.get("/enrollhistory", async (req, res) => {
-      const result = await paymentClassCollection.find().toArray();
+      const result = await paymentClassCollection.find().sort({ date: -1 }).toArray();
       res.send(result);
     });
 
