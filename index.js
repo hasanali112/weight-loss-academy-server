@@ -118,8 +118,8 @@ async function run() {
     });
 
     //student dashborad
-    app.get("/myclasses", async (req, res) => {
-      const result = await selectedClassCollection.find().toArray();
+    app.get("/myclasses/:email", async (req, res) => {
+      const result = await selectedClassCollection.find({ email: req.params.email }).toArray();
       res.send(result);
     });
 
@@ -280,14 +280,14 @@ async function run() {
     });
 
     //get enroll item
-    app.get("/entrolledclasses", async (req, res) => {
-      const result = await paymentClassCollection.find().toArray();
+    app.get("/entrolledclasses/:email", async (req, res) => {
+      const result = await paymentClassCollection.find({ email: req.params.email }).toArray();
       res.send(result);
     });
 
     //enroll history
-    app.get("/enrollhistory", async (req, res) => {
-      const result = await paymentClassCollection.find().sort({ date: -1 }).toArray();
+    app.get("/enrollhistory/:email", async (req, res) => {
+      const result = await paymentClassCollection.find({ email: req.params.email }).sort({ date: -1 }).toArray();
       res.send(result);
     });
 
