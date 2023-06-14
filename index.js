@@ -58,6 +58,9 @@ async function run() {
     const paymentClassCollection = client
       .db("weight-loss-academy")
       .collection("payment");
+    const popularClassCollection = client
+      .db("weight-loss-academy")
+      .collection("popular-class");
 
     //JWT
     app.post("/jwt", (req, res) => {
@@ -91,6 +94,13 @@ async function run() {
       res.send(result);
     });
 
+    app.get('/popular-classes', async(req, res)=>{
+      const result = await popularClassCollection.find().toArray()
+      res.send(result)
+    })
+
+
+
     app.get("/ourinstructor", async (req, res) => {
       const result = await userCollection
         .find({ role: "instructor" })
@@ -121,6 +131,13 @@ async function run() {
         return res.send({ message: "already exsist" });
       }
       const result = await selectedClassCollection.insertOne(selectedClass);
+      res.send(result);
+    });
+
+    app.delete("/selected-class/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await selectedClassCollection.deleteOne(query);
       res.send(result);
     });
 
@@ -163,6 +180,9 @@ async function run() {
       const result = { instructor: user?.role === 'instructor' }
       res.send(result);
     })
+
+
+    
     
     //get admin role
     app.patch("/users/admin/:id", async (req, res) => {
@@ -300,14 +320,17 @@ async function run() {
             }
           }
         ]).toArray();
-    
         const count = result.length > 0 ? result[0].count : 0;
-        res.send(`Number of IDs in the payment collection: ${count}`);
+        const response = [{ id: 1, count }]; // Assuming the id value is 1
+        res.send(JSON.stringify(response));
       
     });
 
+
+
+
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
